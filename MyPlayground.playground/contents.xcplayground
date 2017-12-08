@@ -8,5 +8,6 @@
         <page name='运算符'/>
         <page name='字符串'/>
         <page name='集合类型'/>
+        <page name='控制流'/>
     </pages>
 </playground>
