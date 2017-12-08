@@ -121,4 +121,28 @@ var namesOfIntergers = [Int: String]()
 namesOfIntergers[16] = "sixteen"
 // 用字典字面量创建字典
 var airports: [String: String] = ["YYZ": "Toronto Pearson", "DUB": "Dublin"]
-
+//访问和修改字典
+// count isEmpty
+if airports.isEmpty {
+    print("the airport dictionary is empty")
+}else {
+    print("the airport dictionary is not empty")
+}
+// the airport dictionary is not empty
+// 添加或修改1 可用 方法可以设置或者更新特定键对应的值
+airports["LHR"] = "London"
+// 添加或修改方法2 updateValue(_:forKey:) 方法可以设置或者更新特定键对应的值 方法返回更新值之前的原值
+if let oldValue = airports.updateValue("Dublin Airport", forKey: "DUB") {
+    print("The old value fro DUB was \(oldValue)")
+}
+//: 删除 removeValue(forKey:)  方法在键值对存在的情况下会移除该键值对并且返回被移除的值或者在没有值的情况下返回
+if let removedValue = airports.removeValue(forKey: "DUB") {
+    print("The removed airport's name is \(removedValue)")
+}else {
+    print("The airports dictionary does not contain a value for DUB")
+}
+//结果 The removed airport's name is Dublin Airport
+//: 字典的遍历
+for (airportCode, airportName) in airports {
+    print("\(airportCode) : \(airportName)")
+}
