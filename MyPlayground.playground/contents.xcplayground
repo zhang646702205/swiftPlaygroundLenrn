@@ -11,5 +11,6 @@
         <page name='控制流'/>
         <page name='函数'/>
         <page name='闭包'/>
+        <page name='枚举'/>
     </pages>
 </playground>
