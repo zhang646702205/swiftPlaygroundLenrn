@@ -12,5 +12,6 @@
         <page name='函数'/>
         <page name='闭包'/>
         <page name='枚举'/>
+        <page name='类和结构体'/>
     </pages>
 </playground>
