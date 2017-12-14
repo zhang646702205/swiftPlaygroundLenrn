@@ -13,5 +13,6 @@
         <page name='闭包'/>
         <page name='枚举'/>
         <page name='类和结构体'/>
+        <page name='属性'/>
     </pages>
 </playground>
