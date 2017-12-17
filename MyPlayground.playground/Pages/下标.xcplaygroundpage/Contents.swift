@@ -65,7 +65,7 @@ var matrix = Matrix(rows: 2, columns: 2)
 matrix[0, 1] = 1.5
 matrix[1, 0] = 3.2
 //: 设置值或取值时有断言，用来检查下标的如参row和column的值是否有效。断言在下标越界时触发:
-let someValue = matrix[2,2]//断言将会触发，因为 [2, 2] 已经超过了 matrix 的范围
+//let someValue = matrix[2,2]//断言将会触发，因为 [2, 2] 已经超过了 matrix 的范围
 
 
 
