@@ -15,5 +15,6 @@
         <page name='类和结构体'/>
         <page name='属性'/>
         <page name='方法'/>
+        <page name='下标'/>
     </pages>
 </playground>
