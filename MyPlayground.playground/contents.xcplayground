@@ -18,5 +18,6 @@
         <page name='下标'/>
         <page name='继承'/>
         <page name='构造过程'/>
+        <page name='析构过程'/>
     </pages>
 </playground>
