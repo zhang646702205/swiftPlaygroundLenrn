@@ -226,4 +226,4 @@ let heading = HTMLElement(name: "h1", text: "hello，world")
 //heading.asHTML = {
 ////    return "<\(heading.name)>\(heading.text ?? defaultText) </\(heading.text)>"
 //}
-print(heading.asHTML)
+print(heading.asHTML()) // <h1>hello，world</h1>
