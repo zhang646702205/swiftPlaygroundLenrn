@@ -19,5 +19,6 @@
         <page name='继承'/>
         <page name='构造过程'/>
         <page name='析构过程'/>
+        <page name='自动引用计数'/>
     </pages>
 </playground>
