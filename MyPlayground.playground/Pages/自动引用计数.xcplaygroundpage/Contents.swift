@@ -227,3 +227,73 @@ let heading = HTMLElement(name: "h1", text: "hello，world")
 ////    return "<\(heading.name)>\(heading.text ?? defaultText) </\(heading.text)>"
 //}
 print(heading.asHTML()) // <h1>hello，world</h1>
+//: ```
+//: 注意
+//: asHTML 声明为lazy 属性，只有当元素确实需要被处理为 HTML 输出的字符串时，才需要使用 HTML。也就是说，在默认的闭包中可以使用self，只有当初始化完成以及self 确实存在后，才能访问 lazy属性。
+
+var parahraph : HTMLElement? = HTMLElement(name: "p", text: "hello, world")
+print(parahraph!.asHTML())//<p>hello, world</p>
+
+//: ```
+//: 注意
+//: paragraph 定义为可选类型，可以赋值nil 来演示循环强引用
+
+//: 实例中 asHTML 属性持有闭包的强引用，闭包在其闭包体内使用了 self(self.name 和 self.text),因此闭包捕获了 self，意味着闭包反过来持有 HTMLElement 实例的强引用，这样就产生了循环强引用。
+
+//: ```
+//: 注意
+//: 虽然闭包多次使用了 self， 只捕获了HTMLElement实例的一个强引用。
+parahraph = nil
+//: 此时 析构函数中的消息并没有被打破，说明 HTMLElment 实例并没有被销毁。
+//: #### 解决闭包引起的循环强引用
+//: 定义闭包时同时定义捕获列表作为闭包的一部分，这种方式可以作为解决闭包和实例之间的循环强引用。捕获列表定义了闭包体内捕获一个或者多个引用类型的规则。与解决两个类实例间的循环强引用一样，声明每个捕获的引用为弱引用或无主引用，而不是强引用。
+//: ```
+//: 注意
+//: swift 中有如下要求，只要在闭包内使用 self 的成员，就要用 self.someProperty 或者self.someMethod()(而不是 someProperty 或 someMethod()).提醒你可能会不小心捕获了self。
+
+//: #### 定义捕获列表
+//: 捕获列表中的每一项都由一对元素组成，一个是 weak 或 unowned 关键字，另一个是类实例的引用(如self)或初始化过的变量(如 delegate = self.delegate!).在方括号中用逗号分开。如下：
+//: ```
+//: lazy var someClosure: (Int, String) -> String = {
+//:     [unowned self, weak delegate = self.delegate!] (index: Int, stringToProcess: String) -> String in
+//:     // 闭包函数体
+//: }
+
+//: 如果闭包没有指明参数列表或喝者返回类型，会根据上下文推断，可以把捕获列表和关键字 in 放在闭包最开是地方：
+//: ```
+//: lazy var someClosure: () -> String = {
+//:     [unowned self, weak delegate = self.delegate!] Int
+//:     // 函数体
+//: }
+
+//: #### 弱引用和无主引用
+//: 闭包和捕获的实例总是相互引用并且总是同时销毁，将闭包内的捕获定义 为 无主引用。
+
+//: 在捕获的引用可能会变为nil，将闭包内的捕获定义为 弱引用。弱引用总是可选类型，并且当引用的实例被销毁后，弱引用的值会自动置为nil。
+//: 无主引用是正确的解决循环强引用的方法
+class HTMLElement1 {
+    let name:String
+    let text:String?
+    
+    lazy var asHTML: () -> String = { // 捕获列表 将self 捕获为 无主引用而不是强引用
+        [unowned self] in
+        if let text = self.text {
+            return "<\(self.name)>\(text)</\(self.name)>"
+        } else {
+            return "<\(self.name) />"
+        }
+    }
+    init(name:String , text: String? = nil ) {
+        self.name = name
+        self.text = text
+    }
+    deinit {
+        print("\(name) is being deinitialized")
+    }
+}
+
+var paragraph1: HTMLElement1? = HTMLElement1(name: "p", text: "hello, world")
+print(paragraph1?.asHTML())// Optional("<p>hello, world</p>")
+//: 此处 无主引用的形式捕获self。 并不会持有HTMLElement1 实例的强引用。如果将paragraph1 置为nil，实例将被销毁，可以看到 析构函数 打印。
+paragraph1 = nil //p is being deinitialized
+
