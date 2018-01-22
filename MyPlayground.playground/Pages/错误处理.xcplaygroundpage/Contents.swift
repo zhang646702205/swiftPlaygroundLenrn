@@ -17,7 +17,7 @@ enum VendingMachineError: Error {
 //: 抛出错误可以表明有意外情况发生，导致正常的执行流程无法继续执行。抛出错误 使用 throw 关键字。如下所示：
 
 //:throw VendingMachineError.insufficientFunds(coinsNeeded:5)
-//print("000000")
+print("000000")
 //: #### 处理错误
 //: 某个错误抛出时，附近某部分代码必须负责处理这个错误。
 //: swift 中有4种处理错误的方式，可以把函数抛出的错误传递给调用此函数的代码、用 do-catch 语句处理错误、将错误作为可选类型处理、或者断言此错误根本不会发生。
@@ -126,8 +126,9 @@ print("ssssss")
 //: #### 将错误转换成可选值
 //: 可以使用 try？ 通过将错误转换成一个可选值来处理错误。在评估 try? 表达式时一个错误被抛出，那么表达式的值就是nil。
 //: ```
- func someThrowingFunction() throw -> Int {
+ func someThrowingFunction() throws -> Int {
     // ...
+    return 0
  }
 let x = try? someThrowingFunction()
 
