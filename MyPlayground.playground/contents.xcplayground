@@ -25,5 +25,6 @@
         <page name='类型转换'/>
         <page name='嵌套类型'/>
         <page name='扩展'/>
+        <page name='协议'/>
     </pages>
 </playground>
