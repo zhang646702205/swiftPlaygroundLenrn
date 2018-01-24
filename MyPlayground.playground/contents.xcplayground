@@ -26,5 +26,6 @@
         <page name='嵌套类型'/>
         <page name='扩展'/>
         <page name='协议'/>
+        <page name='泛型'/>
     </pages>
 </playground>
