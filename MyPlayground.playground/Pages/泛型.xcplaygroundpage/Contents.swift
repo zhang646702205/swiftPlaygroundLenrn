@@ -257,7 +257,7 @@ struct Stack1<Element> : Container {
 
 //: #### 通过扩展一个存在的类型来指定关联类型
 //: Swift 的Array 类型已经提供 append(_:) 方法，一个 count 属性，以及一个接受Int 类型索引值的下标用以检索器元素。三个功能都符合 Container 协议的要求，意味着只需简单的声明 Array 采纳协议就可以扩展Array， 使其遵从 Container 协议。可以通过空扩展来实现。
-extension Array : Container, Container1{}
+extension Array : Container{}
 
 //: #### 约束关联类型
 //: 可以给协议里的 关联类型加类型注释，让遵守协议的类型必须遵循这个条件约束。如下例所示：
@@ -336,15 +336,64 @@ notEquatableStack.push(notEquatableValue)
 //notEquatableStack.isTop() // 报错 not comfirm to protocol equatable
 
 //: 可以 使用 泛型where 去扩展一个 协议，如：
-extension Container1 where Item: Equatable {
-    func  startsWith(_ item : Item) -> Bool {
+extension Container where ItemType: Equatable {
+    func  startsWith(_ item : ItemType) -> Bool {
         return count >= 1 && self[0] == item
     }
 }
+//extension Array : Container{}
 //: 这个 startsWith(_:) 方法首先确保容器至少有一个元素，然后检查容器中的第一个元素是否与给定的元素相等。任何符合 Container 协议的类型都可以使用这个新的 startsWith(_:) 方法，包括上面使用的栈和数组，只要容器的元素是符合 Equatable 协议的
 
 if  [9, 9, 9].startsWith(42){
     print("Starts with 42")
 }else {
     print("Start with something else")
+}//Start with something else
+//: 也可以编写一个泛型 where 子句去要求 Item 为特定类型。如下例：
+extension Container where ItemType == Double {
+    func average() -> Double {
+        var sum = 0.0
+        for index in 0..<count {
+            sum += self[index]
+        }
+        return sum/Double(count)
+    }
 }
+print([1260.0, 1200.0,98.6,37.0].average())//648.9
+
+//: #### 具有泛型 where 子句的关联类型
+//: 可以在关联类型后面加上具有泛型 where 的字句。如： 建立一个包含迭代器(Iterator)的容器,像标准库里的 sequence 协议一样：可以照如下写法：
+protocol ContainerWithInterator {
+    associatedtype Item
+    mutating func append(_ item: Item)
+    var count: Int{get}
+    subscript(i : Int)-> Item{get}
+
+    // 该语法 只是用于 swift 4 以后
+    associatedtype Iterator: IteratorProtocol where Iterator.Element == Item
+    func makeInterator() -> Iterator
+    
+}
+//: 迭代器（Iterator）的泛型 where 子句要求：无论迭代器是什么类型，迭代器中的元素类型，必须和容器项目的类型保持一致。makeIterator() 则提供了容器的迭代器的访问接口。
+
+//: 一个协议继承了另一个协议，通过在协议声明的时候，包含泛型 where 子句，来添加了一个约束到被继承协议的关联类型。
+//protocol ComparableContainer : ContainerWithInterator where Item :Comparable {}
+
+//: #### 泛型下标
+//: 下标能够是泛型的，能够包含泛型 where 子句。可以把占位符类型的名字写在 subscript 后面的尖括号里，下标代码体开始的标志的花括号之前写泛型 where 子句：
+
+extension ContainerWithInterator {
+    subscript<Indices: Sequence>(indices : Indices) -> [Item] where Indices.Iterator.Element == Int {
+        var result = [Item]()
+        for index in indices {
+            result.append(self[index])
+        }
+        return result
+    }
+}
+//: 这个 ContainerWithInterator 协议的扩展添加了一个下标方法，接收一个索引的值，返回每一个索引所在值的数组。泛型下标约束如下：
+//: > 尖括号中的泛型参数 Indices ， 不许符合标准库中的 Sequence 协议类型。
+//: > 下标使用的单一参数，indices， 必须是 Indices 的实例。
+//: > 泛型 where 子句要求Sequence(Indices) 的迭代器，所有的元素都是 Int 类型。这样能确保在序列(Sequence) 中的索引和容器(Container)里面的索引类型一致。
+//: 综合一下，这些约束意味着，传入到 indices 下标，是一个整型的序列.原来的 ContainerWithInterator 协议，subscript 必须是 Int 型的，扩展中新的 subscript，允许下标是一个的序列，而非单一的值。
+
