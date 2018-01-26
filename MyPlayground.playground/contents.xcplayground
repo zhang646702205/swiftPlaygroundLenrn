@@ -28,5 +28,6 @@
         <page name='协议'/>
         <page name='泛型'/>
         <page name='高级运算符'/>
+        <page name='权限控制'/>
     </pages>
 </playground>
