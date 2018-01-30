@@ -249,6 +249,9 @@ extension SomeStruct : SomeProtocol {
         print(privateVariable)
     }
 }
+var s = SomeStruct()
+s.doSomething()
+
 //: #### 泛型
 //: 泛型类型或泛型函数的访问级别是泛型类型或函数本身的访问级别，以及其类型参数的任何类型约束的访问级别。
 
